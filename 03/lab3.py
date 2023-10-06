@@ -11,3 +11,19 @@ print(f"{name} is an {type_of_company}company.")
 
 #tuple
 my_tuple = (1,2,3)
+
+
+for i in range(10):
+    print(i)
+
+
+x = 10
+if x == 10:
+    print(x == 10)
+if x > 5:
+    print(x > 5)
+if x < 10:
+    print(x < 10)
+else:
+    print("else")
+
