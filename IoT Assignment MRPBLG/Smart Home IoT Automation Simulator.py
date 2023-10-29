@@ -438,6 +438,23 @@ def toggle_camera():
     else:
         camera_status_var.set("No")
 
+def camera_mode_button():
+    if security_camera.security_status == SecurityStatus.NORMAL:
+        return "Set mode: Emergency"
+    else:
+        return "Set mode Normal"
+
+def toggle_camera_mode():
+
+    print("preessed")
+    if security_camera.security_status == SecurityStatus.NORMAL:
+        camera_mode_var.set("Emergency")
+        security_camera.security_status = SecurityStatus.EMERGENCY
+        camera_mode_button()
+    else :
+        camera_mode_var.set("Emergency")
+        security_camera.security_status = SecurityStatus.EMERGENCY
+        camera_mode_button()
 
 smart_light = SmartLight("Light_01")
 thermostat = Thermostat("Thermostat_01")
@@ -481,6 +498,6 @@ camera_mode_var = tk.StringVar(value="Normal")
 ttk.Label(frame, text=f"{security_camera.device_id}").grid(column=0, row=7, pady=10, padx=10, sticky=tk.W)
 ttk.Label(frame, textvariable=camera_mode_var).grid(column=0, row=8, pady=10, padx=10, sticky=tk.W)
 ttk.Button(frame, text=f"Toggle {security_camera.device_id} ON/OFF", command=toggle_camera).grid(column=0, row=9, pady=10, padx=10)
-ttk.Button(frame, text="Emergency Mode", command=lambda: camera_mode_var.set("Emergency")).grid(column=0, row=10, pady=10, padx=10)
+ttk.Button(frame, text=camera_mode_button(), command=toggle_camera_mode).grid(column=0, row=10, pady=10, padx=10)
 
 app.mainloop()
