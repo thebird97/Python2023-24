@@ -405,20 +405,19 @@ if __name__ == '__main__':
 #PART 4 GUI
 
 # Light control functions
-def toggle_light_gui():
+def toggle_light():
     if light_status_var.get() == "On":
         light_status_var.set("Off")
-        smart_light.turn_off()
+        smart_light.set_brightness(0)
         brightness_scale.set(0)
     else:
         light_status_var.set("On")
-        smart_light.turn_on()
+        smart_light.set_brightness(100)
         brightness_scale.set(100)
-
     update_light_label()
 
 def update_light_label():
-    light_brightness_var.set(f"{smart_light.device_id} : \n{int(brightness_scale.get())}")
+    light_brightness_var.set(f"Living Room Light Brightness\n{brightness_scale.get()}")
 
 # Thermostat control functions
 def toggle_thermostat():
@@ -466,7 +465,7 @@ brightness_scale.set(int(smart_light.brightness))
 light_brightness_var.set(f"{smart_light.device_id}  Brightness\n{smart_light.brightness}")
 ttk.Label(frame, textvariable=light_brightness_var).grid(column=0, row=1, pady=10, padx=10, sticky=tk.W)
 brightness_scale.grid(column=0, row=2, pady=10, padx=10, sticky=tk.W)
-ttk.Button(frame, text=f"Toggle {smart_light.device_id} ON/OFF", command=toggle_light_gui).grid(column=0, row=3, pady=10, padx=10)
+ttk.Button(frame, text=f"Toggle {smart_light.device_id} ON/OFF", command=toggle_light).grid(column=0, row=3, pady=10, padx=10)
 
 # Thermostat controls
 thermostat_temp_var = tk.StringVar()
@@ -474,13 +473,13 @@ temperature_scale = ttk.Scale(frame, from_=-10, to=30, command=lambda x: update_
 temperature_scale.set(17)
 ttk.Label(frame, textvariable=thermostat_temp_var).grid(column=0, row=4, pady=10, padx=10, sticky=tk.W)
 temperature_scale.grid(column=0, row=5, pady=10, padx=10, sticky=tk.W)
-ttk.Button(frame, text=f"Toggle {thermostat.device_id} ON/OFF", command=toggle_thermostat).grid(column=0, row=6, pady=10, padx=10)
+ttk.Button(frame, text="Toggle Thermostat ON/OFF", command=toggle_thermostat).grid(column=0, row=6, pady=10, padx=10)
 
 # Camera controls
 camera_mode_var = tk.StringVar(value="Normal")
-ttk.Label(frame, text=f"{security_camera.device_id}").grid(column=0, row=7, pady=10, padx=10, sticky=tk.W)
+ttk.Label(frame, text="Front Door Camera").grid(column=0, row=7, pady=10, padx=10, sticky=tk.W)
 ttk.Label(frame, textvariable=camera_mode_var).grid(column=0, row=8, pady=10, padx=10, sticky=tk.W)
-ttk.Button(frame, text=f"Toggle {security_camera.device_id} ON/OFF", command=toggle_camera).grid(column=0, row=9, pady=10, padx=10)
+ttk.Button(frame, text="Toggle Camera ON/OFF", command=toggle_camera).grid(column=0, row=9, pady=10, padx=10)
 ttk.Button(frame, text="Emergency Mode", command=lambda: camera_mode_var.set("Emergency")).grid(column=0, row=10, pady=10, padx=10)
 
 app.mainloop()
