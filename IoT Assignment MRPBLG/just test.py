@@ -17,8 +17,8 @@ class DeviceStatus(Enum):
 
 
 class SecurityStatus(Enum):
-    NORMAL = "NORMAL"
-    EMERGENCY = "EMERGENCY"
+    NORMAL = "Normal"
+    EMERGENCY = "Emergency"
 
 
 DEFAULT_TEMPERATURE = 20

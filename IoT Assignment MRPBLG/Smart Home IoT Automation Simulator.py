@@ -17,8 +17,9 @@ class DeviceStatus(Enum):
 
 
 class SecurityStatus(Enum):
-    NORMAL = "NORMAL"
-    EMERGENCY = "EMERGENCY"
+    NORMAL = "Normal"
+    MOTIONDETECTION = "Motion detection"
+    
 
 
 DEFAULT_TEMPERATURE = 20
@@ -101,7 +102,7 @@ class SecurityCamera:
     Attributes:
         device_id (str): Identifier for the security camera.
         status (DeviceStatus): The current status of the camera (ON or OFF).
-        security_status (SecurityStatus): The current security status (NORMAL or EMERGENCY).
+        security_status (SecurityStatus): The current security status (NORMAL or MOTIONDETECTION).
     """
     def __init__(self, device_id):
         self.device_id = device_id
@@ -119,7 +120,7 @@ class SecurityCamera:
 
     def trigger_alarm(self):
         if self.status == DeviceStatus.ON:
-            self.security_status = SecurityStatus.EMERGENCY
+            self.security_status = SecurityStatus.MOTIONDETECTION
             self.last_updated = datetime.datetime.now()
 
     def reset_alarm(self):
@@ -168,7 +169,7 @@ class AutomationSystem:
                     device.set_temperature(22)
             elif isinstance(device, SecurityCamera):
                 # task for SecurityCamera
-                if device.security_status == SecurityStatus.EMERGENCY:
+                if device.security_status == SecurityStatus.MOTIONDETECTION:
                     device.reset_alarm()
     def simulate_automation_system(self, duration=10, interval=1):
         """
@@ -280,7 +281,7 @@ def execute_automation_tasks(self):
                 device.set_temperature(22)
         elif isinstance(device, SecurityCamera):
             #task for SecurityCamera
-            if device.security_status == SecurityStatus.EMERGENCY:
+            if device.security_status == SecurityStatus.MOTIONDETECTION:
                 device.reset_alarm()
 
 
@@ -342,7 +343,7 @@ class TestSmartHomeDevices(unittest.TestCase):
         self.assertEqual(security_camera.security_status, SecurityStatus.NORMAL)
 
         security_camera.trigger_alarm()
-        self.assertEqual(security_camera.security_status, SecurityStatus.EMERGENCY)
+        self.assertEqual(security_camera.security_status, SecurityStatus.MOTIONDETECTION)
 
         security_camera.reset_alarm()
         self.assertEqual(security_camera.security_status, SecurityStatus.NORMAL)
@@ -415,7 +416,9 @@ def toggle_light_gui():
         smart_light.turn_on()
         brightness_scale.set(100)
 
+
     update_light_label()
+    update_status_label()
 
 def update_light_label():
     light_brightness_var.set(f"{smart_light.device_id} : \n{int(brightness_scale.get())}")
@@ -424,9 +427,13 @@ def update_light_label():
 def toggle_thermostat():
     if thermostat_status_var.get() == "On":
         thermostat_status_var.set("Off")
+        thermostat.status = DeviceStatus.OFF
+
     else:
         thermostat_status_var.set("On")
+        thermostat.status = DeviceStatus.ON
     update_thermostat_label()
+    update_status_label()
 
 def update_thermostat_label():
     thermostat_temp_var.set(f"Living Room Thermostat\n{round(float(temperature_scale.get()))} C")
@@ -438,23 +445,66 @@ def toggle_camera():
     else:
         camera_status_var.set("No")
 
-def camera_mode_button():
+def camera_mode_button_text():
     if security_camera.security_status == SecurityStatus.NORMAL:
-        return "Set mode: Emergency"
+        return "Set mode: MOTIONDETECTION"
     else:
-        return "Set mode Normal"
+        return "Set mode: Normal"
+
 
 def toggle_camera_mode():
+    if security_camera.status == DeviceStatus.OFF:
+        camera_mode_var.set(f"Camera turned {security_camera.status.name}")
+    else:
+        if security_camera.security_status == SecurityStatus.NORMAL:
+            security_camera.security_status = SecurityStatus.MOTIONDETECTION
+        else:
+            security_camera.security_status = SecurityStatus.NORMAL
+        camera_mode_var.set(f"Camera mode: {security_camera.security_status.value}")
 
-    print("preessed")
-    if security_camera.security_status == SecurityStatus.NORMAL:
-        camera_mode_var.set("Emergency")
-        security_camera.security_status = SecurityStatus.EMERGENCY
-        camera_mode_button()
-    else :
-        camera_mode_var.set("Emergency")
-        security_camera.security_status = SecurityStatus.EMERGENCY
-        camera_mode_button()
+    update_camera_mode_button()
+
+
+def update_camera_mode_button():
+    camera_mode_button.config(text=camera_mode_button_text())
+
+def camera_mode_button_text():
+    if security_camera.status.name == DeviceStatus.ON.name:
+        if security_camera.security_status == SecurityStatus.NORMAL:
+            return "Set mode: Normal"
+        else:
+            return "Set mode: MOTIONDETECTION"
+    else:
+        return f"Camera turned off!"
+
+
+def toggle_cam_onoff():
+    if security_camera.status == DeviceStatus.ON:
+        camera_onoff_var.set(f"Camera: {DeviceStatus.OFF.value}")
+        security_camera.status = DeviceStatus.OFF
+    else:
+        camera_onoff_var.set(f"Camera: {DeviceStatus.ON.value}")
+        security_camera.status = DeviceStatus.ON
+    update_camera_onoff_button()
+    update_camera_mode_button()
+    update_status_label()  # Update status label
+
+
+def update_status_label():
+    status_label.config(text=f"{smart_light.device_id} : {smart_light.status.value}\n"
+                             f"{thermostat.device_id}: {thermostat.status.value}\n"
+                             f"{security_camera.device_id}: {security_camera.status.value}")
+
+
+
+def update_camera_onoff_button():
+    camera_on_off_button.config(text=camera_onoff_button_text())
+def camera_onoff_button_text():
+    if security_camera.status.name == DeviceStatus.ON.name:
+        return f"Turn {security_camera.device_id} Off"
+    else:
+        return f"Set mode: {security_camera.device_id} On"
+
 
 smart_light = SmartLight("Light_01")
 thermostat = Thermostat("Thermostat_01")
@@ -470,11 +520,10 @@ frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
 light_status_var = tk.StringVar(value=smart_light.status.value)
 thermostat_status_var = tk.StringVar(value=thermostat.status.value)
 camera_status_var = tk.StringVar(value=security_camera.status.value)
-status_label = ttk.Label(frame, textvariable=light_status_var)
+status_label = ttk.Label(frame)
 status_label.grid(column=0, row=0, pady=10, padx=10, columnspan=2)
-ttk.Label(frame, text=f"{smart_light.device_id} : {smart_light.status.value}\n"
-                      f"{thermostat.device_id}: {thermostat.status.value}\n"
-                      f"{security_camera.device_id}: {security_camera.status.value}").grid(column=0, row=0, pady=10, padx=10)
+update_status_label()
+
 
 # Light controls
 light_brightness_var = tk.StringVar()
@@ -494,10 +543,14 @@ temperature_scale.grid(column=0, row=5, pady=10, padx=10, sticky=tk.W)
 ttk.Button(frame, text=f"Toggle {thermostat.device_id} ON/OFF", command=toggle_thermostat).grid(column=0, row=6, pady=10, padx=10)
 
 # Camera controls
-camera_mode_var = tk.StringVar(value="Normal")
+camera_onoff_var = tk.StringVar(value=f"Camera : {security_camera.status.value}")
+camera_mode_var = tk.StringVar(value=f"Camera mode: {security_camera.security_status.value}")
+
 ttk.Label(frame, text=f"{security_camera.device_id}").grid(column=0, row=7, pady=10, padx=10, sticky=tk.W)
 ttk.Label(frame, textvariable=camera_mode_var).grid(column=0, row=8, pady=10, padx=10, sticky=tk.W)
-ttk.Button(frame, text=f"Toggle {security_camera.device_id} ON/OFF", command=toggle_camera).grid(column=0, row=9, pady=10, padx=10)
-ttk.Button(frame, text=camera_mode_button(), command=toggle_camera_mode).grid(column=0, row=10, pady=10, padx=10)
+camera_on_off_button = ttk.Button(frame, text=camera_onoff_button_text(), command=toggle_cam_onoff)
+camera_on_off_button.grid(column=0, row=9, pady=10, padx=10)
+camera_mode_button = ttk.Button(frame, text=camera_mode_button_text(), command=toggle_camera_mode)
+camera_mode_button.grid(column=0, row=10, pady=10, padx=10)
 
 app.mainloop()
