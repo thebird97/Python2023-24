@@ -7,8 +7,9 @@ import unittest
 import unittest
 import tkinter as tk
 from tkinter import ttk
-from matplotlib.figure import Figure
+import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from matplotlib.figure import Figure
 
 #PART 1
 class DeviceStatus(Enum):
@@ -256,7 +257,7 @@ def simulate_device_behavior(device, duration=10, interval=1):
 #PART 1
 print("#PART 1")
 
-"""
+
 smart_light = SmartLight("Light_01")
 thermostat = Thermostat("Thermostat_01")
 security_camera = SecurityCamera("Camera_01")
@@ -265,7 +266,7 @@ security_camera = SecurityCamera("Camera_01")
 simulate_device_behavior(smart_light, 3, 1)
 simulate_device_behavior(thermostat, 3, 1)
 simulate_device_behavior(security_camera, 3, 1)
-"""
+
 
 #PART 2
 print("#PART 2")
@@ -288,16 +289,16 @@ def execute_automation_tasks(self):
 
 
 
-"""
-smart_light = SmartLight("Light_02")
-thermostat = Thermostat("Thermo_2")
-security_camera = SecurityCamera("Camera_02")
+
+smart_light = SmartLight("Part 2 Light_02")
+thermostat = Thermostat("Part 2 Thermo_2")
+security_camera = SecurityCamera("Part 2 Camera_02")
 
 
 home_automation = AutomationSystem()
 home_automation.discover_devices([smart_light, thermostat, security_camera])
 home_automation.simulate_automation_system(10, 1)
-"""
+
 #PART 3
 print("PART 3")
 
@@ -423,6 +424,7 @@ def toggle_light_gui():
 def update_light_label():
     light_brightness_var.set(f"{smart_light.device_id} : \n{int(brightness_scale.get())}")
 
+
 # Thermostat control functions
 def toggle_thermostat():
     if thermostat_status_var.get() == "On":
@@ -506,9 +508,75 @@ def camera_onoff_button_text():
         return f"Set mode: {security_camera.device_id} On"
 
 
-smart_light = SmartLight("Light_01")
-thermostat = Thermostat("Thermostat_01")
-security_camera = SecurityCamera("Camera_01")
+
+def monitor_data():
+    # Create a new top-level window
+    monitor_window = tk.Toplevel(app)
+    monitor_window.title("Real-time Data Monitoring")
+
+    # Create a figure for plotting
+    fig = Figure(figsize=(10, 4), dpi=100)
+    ax1 = fig.add_subplot(131)  # For thermostat
+    ax2 = fig.add_subplot(132)  # For security camera
+    ax3 = fig.add_subplot(133)  # For smart light
+
+    # Draw the canvas
+    canvas = FigureCanvasTkAgg(fig, master=monitor_window)
+    canvas_widget = canvas.get_tk_widget()
+    canvas_widget.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+
+    temperature_data = []
+    brightness_data = []
+    motion_data = []
+    time_data = []
+
+    def update_data():
+        # Simulate real-time data
+        current_time = time.time()
+        temperature = round(float(temperature_scale.get())) + random.uniform(-1, 1)
+        brightness = int(brightness_scale.get()) + random.randint(-5, 5)
+        motion_detected = random.choice([True, False])
+
+        # Append data to lists
+        time_data.append(current_time)
+        temperature_data.append(temperature)
+        brightness_data.append(brightness)
+        motion_data.append(motion_detected)
+
+        # Update thermostat graph
+        ax1.clear()
+        ax1.plot(time_data, temperature_data, 'r-')
+        ax1.set_title('Thermostat Temperature')
+        ax1.set_xlabel('Time')
+        ax1.set_ylabel('Temperature (C)')
+
+        # Update security camera status
+        ax2.clear()
+        ax2.plot(time_data, [1 if motion else 0 for motion in motion_data], 'b-')
+        ax2.set_title('Security Camera Status')
+        ax2.set_xlabel('Time')
+        ax2.set_ylabel('Motion Detected')
+
+        # Update smart light brightness
+        ax3.clear()
+        ax3.plot(time_data, brightness_data, 'g-')
+        ax3.set_title('Smart Light Brightness')
+        ax3.set_xlabel('Time')
+        ax3.set_ylabel('Brightness')
+
+        # Draw the updated plots
+        canvas.draw()
+
+        # Update data every second
+        monitor_window.after(1000, update_data)
+
+    update_data()
+
+
+
+smart_light = SmartLight("Hall Smartlight 01")
+thermostat = Thermostat("Dining Thermostat 01")
+security_camera = SecurityCamera("Front Door Camera_01")
 
 app = tk.Tk()
 app.title("Smart Home IoT Simulator")
@@ -553,4 +621,11 @@ camera_on_off_button.grid(column=0, row=9, pady=10, padx=10)
 camera_mode_button = ttk.Button(frame, text=camera_mode_button_text(), command=toggle_camera_mode)
 camera_mode_button.grid(column=0, row=10, pady=10, padx=10)
 
+camera_mode_button = ttk.Button(frame, text=camera_mode_button_text(), command=toggle_camera_mode)
+camera_mode_button.grid(column=0, row=11, pady=10, padx=10)
+
+monitorButton = ttk.Button(frame, text="Monitor Real-time Data", command=monitor_data)
+monitorButton.grid(column=0, row=11, pady=10, padx=10)
+
 app.mainloop()
+
