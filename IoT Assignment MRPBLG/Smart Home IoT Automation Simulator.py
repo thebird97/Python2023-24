@@ -24,6 +24,8 @@ class SecurityStatus(Enum):
 
 
 DEFAULT_TEMPERATURE = 20
+MIN_TEMPERATURE = -5
+MAX_TEMPERATURE = 30
 
 
 class SmartLight:
@@ -257,7 +259,7 @@ def simulate_device_behavior(device, duration=10, interval=1):
 #PART 1
 print("#PART 1")
 
-
+"""
 smart_light = SmartLight("Light_01")
 thermostat = Thermostat("Thermostat_01")
 security_camera = SecurityCamera("Camera_01")
@@ -267,6 +269,10 @@ simulate_device_behavior(smart_light, 3, 1)
 simulate_device_behavior(thermostat, 3, 1)
 simulate_device_behavior(security_camera, 3, 1)
 
+del smart_light
+del thermostat
+del security_camera
+"""
 
 #PART 2
 print("#PART 2")
@@ -289,7 +295,7 @@ def execute_automation_tasks(self):
 
 
 
-
+"""
 smart_light = SmartLight("Part 2 Light_02")
 thermostat = Thermostat("Part 2 Thermo_2")
 security_camera = SecurityCamera("Part 2 Camera_02")
@@ -298,7 +304,7 @@ security_camera = SecurityCamera("Part 2 Camera_02")
 home_automation = AutomationSystem()
 home_automation.discover_devices([smart_light, thermostat, security_camera])
 home_automation.simulate_automation_system(10, 1)
-
+"""
 #PART 3
 print("PART 3")
 
@@ -533,9 +539,33 @@ def monitor_data():
     def update_data():
         # Simulate real-time data
         current_time = time.time()
+
+        smart_light_graph = SmartLight("Lobby Smartlight")
+        thermostat_graph = Thermostat("Hall Thermostat")
+        security_camera_graph = SecurityCamera("Rear Camera")
+
+        """
         temperature = round(float(temperature_scale.get())) + random.uniform(-1, 1)
         brightness = int(brightness_scale.get()) + random.randint(-5, 5)
         motion_detected = random.choice([True, False])
+        """
+        thermostat_graph.set_temperature(round(float(temperature_scale.get())) + random.uniform(0, 32))
+        temperature = thermostat_graph.temperature
+
+
+        smart_light_graph.set_brightness(random.randint(MIN_TEMPERATURE, MAX_TEMPERATURE))
+        brightness = smart_light_graph.brightness
+
+        a = random.choice([True, False])
+        if a:
+            security_camera_graph.trigger_alarm()
+        else:
+            security_camera_graph.reset_alarm()
+
+        if security_camera_graph.security_status == SecurityStatus.NORMAL:
+            motion_detected = False
+        else:
+           motion_detected = True
 
         # Append data to lists
         time_data.append(current_time)
@@ -546,21 +576,21 @@ def monitor_data():
         # Update thermostat graph
         ax1.clear()
         ax1.plot(time_data, temperature_data, 'r-')
-        ax1.set_title('Thermostat Temperature')
+        ax1.set_title(f'{thermostat_graph.device_id} Temperature')
         ax1.set_xlabel('Time')
         ax1.set_ylabel('Temperature (C)')
 
         # Update security camera status
         ax2.clear()
         ax2.plot(time_data, [1 if motion else 0 for motion in motion_data], 'b-')
-        ax2.set_title('Security Camera Status')
+        ax2.set_title(f'{security_camera_graph.device_id} Status')
         ax2.set_xlabel('Time')
-        ax2.set_ylabel('Motion Detected')
+        ax2.set_ylabel('Emergency mode detected')
 
         # Update smart light brightness
         ax3.clear()
         ax3.plot(time_data, brightness_data, 'g-')
-        ax3.set_title('Smart Light Brightness')
+        ax3.set_title(f'{smart_light_graph.device_id} Brightness')
         ax3.set_xlabel('Time')
         ax3.set_ylabel('Brightness')
 
