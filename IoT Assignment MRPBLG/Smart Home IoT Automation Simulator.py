@@ -11,7 +11,8 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 
-#PART 1
+
+# PART 1
 class DeviceStatus(Enum):
     ON = "On"
     OFF = "Off"
@@ -20,7 +21,6 @@ class DeviceStatus(Enum):
 class SecurityStatus(Enum):
     NORMAL = "Normal"
     MOTIONDETECTION = "Motion detection"
-    
 
 
 DEFAULT_TEMPERATURE = 20
@@ -38,6 +38,7 @@ class SmartLight:
         status (DeviceStatus): The current status of the light (ON or OFF).
         brightness (int): The brightness level of the light.
     """
+
     def __init__(self, device_id):
         self.device_id = device_id
         self.status = DeviceStatus.OFF
@@ -76,6 +77,7 @@ class Thermostat:
         status (DeviceStatus): The current status of the thermostat (ON or OFF).
         temperature (int): The current temperature setting.
     """
+
     def __init__(self, device_id):
         self.device_id = device_id
         self.status = DeviceStatus.OFF
@@ -107,9 +109,10 @@ class SecurityCamera:
         status (DeviceStatus): The current status of the camera (ON or OFF).
         security_status (SecurityStatus): The current security status (NORMAL or MOTIONDETECTION).
     """
+
     def __init__(self, device_id):
         self.device_id = device_id
-        self.status = DeviceStatus.ON #Camera is working by default
+        self.status = DeviceStatus.ON  # Camera is working by default
         self.security_status = SecurityStatus.NORMAL
         self.last_updated = datetime.datetime.now()
 
@@ -131,7 +134,8 @@ class SecurityCamera:
             self.security_status = SecurityStatus.NORMAL
             self.last_updated = datetime.datetime.now()
 
-#PART 2
+
+# PART 2
 
 class AutomationSystem:
     """
@@ -140,6 +144,7 @@ class AutomationSystem:
         Attributes:
             devices (list): List of devices managed by the automation system.
         """
+
     def __init__(self):
         self.devices = []
 
@@ -147,7 +152,7 @@ class AutomationSystem:
         for device in device_list:
             self.add_device(device)
 
-    def add_device(self,device):
+    def add_device(self, device):
         if device not in self.devices:
             self.devices.append(device)
             print(f"Device {device.device_id} added.")
@@ -160,6 +165,7 @@ class AutomationSystem:
             print(f"Device {device.device_id} removed.")
         else:
             print(f"Device {device.device_id} not exists.")
+
     def execute_automation_tasks(self):
         for device in self.devices:
             if isinstance(device, SmartLight):
@@ -174,6 +180,7 @@ class AutomationSystem:
                 # task for SecurityCamera
                 if device.security_status == SecurityStatus.MOTIONDETECTION:
                     device.reset_alarm()
+
     def simulate_automation_system(self, duration=10, interval=1):
         """
         Simulates the automation system for a specified duration and interval.
@@ -198,21 +205,23 @@ class AutomationSystem:
                     # Simulate random brightness changes and print the status
                     new_brightness = random.randint(0, 100)
                     device.set_brightness(new_brightness)
-                    print(f"SmartLight {device.device_id} - Status: {device.status.name}, Brightness: {device.brightness}, Last Updated: {device.last_updated}")
+                    print(
+                        f"SmartLight {device.device_id} - Status: {device.status.name}, Brightness: {device.brightness}, Last Updated: {device.last_updated}")
 
 
                 elif isinstance(device, Thermostat):
                     # Simulate random temperature changes and print the status
                     new_temp = random.randint(15, 30)
                     device.set_temperature(new_temp)
-                    print(f"Thermostat {device.device_id} - Status: {device.status.name}, Temperature: {device.temperature}, Last Updated: {device.last_updated}")
+                    print(
+                        f"Thermostat {device.device_id} - Status: {device.status.name}, Temperature: {device.temperature}, Last Updated: {device.last_updated}")
 
 
                 elif isinstance(device, SecurityCamera):
-                    # Simulate security status changes and print the status
                     if random.choice([True, False]):
                         device.trigger_alarm()
-                        print(f"Security {device.device_id} - Status: {device.status.name}, Temperature: {device.security_status}, Last Updated: {device.last_updated}")
+                        print(
+                            f"Security {device.device_id} - Status: {device.status.name}, Temperature: {device.security_status}, Last Updated: {device.last_updated}")
 
                     else:
                         device.reset_alarm()
@@ -222,7 +231,7 @@ class AutomationSystem:
             time.sleep(interval)
 
 
-#PART 1
+# PART 1
 def simulate_device_behavior(device, duration=10, interval=1):
     print(f"Duration: {duration} Interval: {interval}\n")
     start_time = time.time()
@@ -256,10 +265,11 @@ def simulate_device_behavior(device, duration=10, interval=1):
 
         time.sleep(interval)
 
-#PART 1
+
+# PART 1
 print("#PART 1")
 
-"""
+
 smart_light = SmartLight("Light_01")
 thermostat = Thermostat("Thermostat_01")
 security_camera = SecurityCamera("Camera_01")
@@ -272,10 +282,12 @@ simulate_device_behavior(security_camera, 3, 1)
 del smart_light
 del thermostat
 del security_camera
-"""
 
-#PART 2
+
+# PART 2
 print("#PART 2")
+
+
 def execute_automation_tasks(self):
     for device in self.devices:
         if isinstance(device, SmartLight):
@@ -287,12 +299,9 @@ def execute_automation_tasks(self):
             if device.temperature > 25:
                 device.set_temperature(22)
         elif isinstance(device, SecurityCamera):
-            #task for SecurityCamera
+            # task for SecurityCamera
             if device.security_status == SecurityStatus.MOTIONDETECTION:
                 device.reset_alarm()
-
-
-
 
 
 """
@@ -305,7 +314,7 @@ home_automation = AutomationSystem()
 home_automation.discover_devices([smart_light, thermostat, security_camera])
 home_automation.simulate_automation_system(10, 1)
 """
-#PART 3
+# PART 3
 print("PART 3")
 
 
@@ -358,6 +367,7 @@ class TestSmartHomeDevices(unittest.TestCase):
         security_camera.turn_off()
         self.assertEqual(security_camera.status, DeviceStatus.OFF)
 
+
 class TestAutomationSystem(unittest.TestCase):
 
     def test_automation_system(self):
@@ -383,6 +393,7 @@ class TestAutomationSystem(unittest.TestCase):
 
         self.assertEqual(smart_light.brightness, 50)  # Dimmed by 10
         self.assertEqual(thermostat.temperature, 22)  # Set to 22
+
 
 class TestAutomationSystem(unittest.TestCase):
 
@@ -410,7 +421,8 @@ class TestAutomationSystem(unittest.TestCase):
 if __name__ == '__main__':
     unittest.main()
 
-#PART 4 GUI
+
+# PART 4 GUI
 
 # Light control functions
 def toggle_light_gui():
@@ -423,11 +435,12 @@ def toggle_light_gui():
         smart_light.turn_on()
         brightness_scale.set(100)
 
-
     update_light_label()
     update_status_label()
 
+
 def update_light_label():
+    smart_light.set_brightness(int(brightness_scale.get()))
     light_brightness_var.set(f"{smart_light.device_id} : \n{int(brightness_scale.get())}")
 
 
@@ -443,8 +456,11 @@ def toggle_thermostat():
     update_thermostat_label()
     update_status_label()
 
+
 def update_thermostat_label():
+    thermostat.set_temperature(int(temperature_scale.get()))
     thermostat_temp_var.set(f"Living Room Thermostat\n{round(float(temperature_scale.get()))} C")
+
 
 # Camera control functions
 def toggle_camera():
@@ -452,6 +468,7 @@ def toggle_camera():
         camera_status_var.set("Yes")
     else:
         camera_status_var.set("No")
+
 
 def camera_mode_button_text():
     if security_camera.security_status == SecurityStatus.NORMAL:
@@ -476,12 +493,13 @@ def toggle_camera_mode():
 def update_camera_mode_button():
     camera_mode_button.config(text=camera_mode_button_text())
 
+
 def camera_mode_button_text():
     if security_camera.status.name == DeviceStatus.ON.name:
         if security_camera.security_status == SecurityStatus.NORMAL:
-            return "Set mode: Normal"
+            return "Set mode: Motion Detection"
         else:
-            return "Set mode: MOTIONDETECTION"
+            return "Set mode: Normal"
     else:
         return f"Camera turned off!"
 
@@ -504,9 +522,10 @@ def update_status_label():
                              f"{security_camera.device_id}: {security_camera.status.value}")
 
 
-
 def update_camera_onoff_button():
     camera_on_off_button.config(text=camera_onoff_button_text())
+
+
 def camera_onoff_button_text():
     if security_camera.status.name == DeviceStatus.ON.name:
         return f"Turn {security_camera.device_id} Off"
@@ -514,8 +533,7 @@ def camera_onoff_button_text():
         return f"Set mode: {security_camera.device_id} On"
 
 
-
-def monitor_data():
+def monitor_random_data():
     # Create a new top-level window
     monitor_window = tk.Toplevel(app)
     monitor_window.title("Real-time Data Monitoring")
@@ -537,21 +555,14 @@ def monitor_data():
     time_data = []
 
     def update_data():
-        # Simulate real-time data
         current_time = time.time()
 
         smart_light_graph = SmartLight("Lobby Smartlight")
         thermostat_graph = Thermostat("Hall Thermostat")
         security_camera_graph = SecurityCamera("Rear Camera")
 
-        """
-        temperature = round(float(temperature_scale.get())) + random.uniform(-1, 1)
-        brightness = int(brightness_scale.get()) + random.randint(-5, 5)
-        motion_detected = random.choice([True, False])
-        """
         thermostat_graph.set_temperature(round(float(temperature_scale.get())) + random.uniform(0, 32))
         temperature = thermostat_graph.temperature
-
 
         smart_light_graph.set_brightness(random.randint(MIN_TEMPERATURE, MAX_TEMPERATURE))
         brightness = smart_light_graph.brightness
@@ -565,9 +576,8 @@ def monitor_data():
         if security_camera_graph.security_status == SecurityStatus.NORMAL:
             motion_detected = False
         else:
-           motion_detected = True
+            motion_detected = True
 
-        # Append data to lists
         time_data.append(current_time)
         temperature_data.append(temperature)
         brightness_data.append(brightness)
@@ -594,7 +604,6 @@ def monitor_data():
         ax3.set_xlabel('Time')
         ax3.set_ylabel('Brightness')
 
-        # Draw the updated plots
         canvas.draw()
 
         # Update data every second
@@ -602,6 +611,64 @@ def monitor_data():
 
     update_data()
 
+
+def monitor_real_time_data(smart_light, thermostat, security_camera):
+    # Create a new top-level window
+    monitor_window = tk.Toplevel(app)
+    monitor_window.title("Real-time Data Monitoring")
+
+    # Create a figure for plotting
+    fig = Figure(figsize=(10, 4), dpi=100)
+    ax1 = fig.add_subplot(131)  # For thermostat
+    ax2 = fig.add_subplot(132)  # For security camera
+    ax3 = fig.add_subplot(133)  # For smart light
+
+    # Draw the canvas
+    canvas = FigureCanvasTkAgg(fig, master=monitor_window)
+    canvas_widget = canvas.get_tk_widget()
+    canvas_widget.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+
+    temperature_data = []
+    brightness_data = []
+    motion_data = []
+    time_data = []
+
+    def update_data_real():
+        current_time = time.time()
+        temperature = int(thermostat.temperature)
+        brightness = int(smart_light.brightness)
+        motion_detected = security_camera.security_status != SecurityStatus.NORMAL
+
+        time_data.append(current_time)
+        temperature_data.append(temperature)
+        brightness_data.append(brightness)
+        motion_data.append(motion_detected)
+
+        # Update thermostat graph
+        ax1.clear()
+        ax1.plot(time_data, temperature_data, 'r-')
+        ax1.set_title(f'{thermostat.device_id} Temperature')
+        ax1.set_xlabel('Time')
+        ax1.set_ylabel('Temperature (C)')
+
+        # Update security camera status
+        ax2.clear()
+        ax2.plot(time_data, [1 if motion else 0 for motion in motion_data], 'b-')
+        ax2.set_title(f'{security_camera.device_id} Status')
+        ax2.set_xlabel('Time')
+        ax2.set_ylabel('Motion Detected')
+
+        # Update smart light brightness
+        ax3.clear()
+        ax3.plot(time_data, brightness_data, 'g-')
+        ax3.set_title(f'{smart_light.device_id} Brightness')
+        ax3.set_xlabel('Time')
+        ax3.set_ylabel('Brightness')
+        canvas.draw()
+        # Update data every second
+        monitor_window.after(1000, update_data_real)
+
+    update_data_real()
 
 
 smart_light = SmartLight("Hall Smartlight 01")
@@ -622,7 +689,6 @@ status_label = ttk.Label(frame)
 status_label.grid(column=0, row=0, pady=10, padx=10, columnspan=2)
 update_status_label()
 
-
 # Light controls
 light_brightness_var = tk.StringVar()
 brightness_scale = ttk.Scale(frame, from_=0, to=100, command=lambda x: update_light_label())
@@ -630,7 +696,8 @@ brightness_scale.set(int(smart_light.brightness))
 light_brightness_var.set(f"{smart_light.device_id}  Brightness\n{smart_light.brightness}")
 ttk.Label(frame, textvariable=light_brightness_var).grid(column=0, row=1, pady=10, padx=10, sticky=tk.W)
 brightness_scale.grid(column=0, row=2, pady=10, padx=10, sticky=tk.W)
-ttk.Button(frame, text=f"Toggle {smart_light.device_id} ON/OFF", command=toggle_light_gui).grid(column=0, row=3, pady=10, padx=10)
+ttk.Button(frame, text=f"Toggle {smart_light.device_id} ON/OFF", command=toggle_light_gui).grid(column=0, row=3,
+                                                                                                pady=10, padx=10)
 
 # Thermostat controls
 thermostat_temp_var = tk.StringVar()
@@ -638,7 +705,8 @@ temperature_scale = ttk.Scale(frame, from_=-10, to=30, command=lambda x: update_
 temperature_scale.set(17)
 ttk.Label(frame, textvariable=thermostat_temp_var).grid(column=0, row=4, pady=10, padx=10, sticky=tk.W)
 temperature_scale.grid(column=0, row=5, pady=10, padx=10, sticky=tk.W)
-ttk.Button(frame, text=f"Toggle {thermostat.device_id} ON/OFF", command=toggle_thermostat).grid(column=0, row=6, pady=10, padx=10)
+ttk.Button(frame, text=f"Toggle {thermostat.device_id} ON/OFF", command=toggle_thermostat).grid(column=0, row=6,
+                                                                                                pady=10, padx=10)
 
 # Camera controls
 camera_onoff_var = tk.StringVar(value=f"Camera : {security_camera.status.value}")
@@ -651,11 +719,11 @@ camera_on_off_button.grid(column=0, row=9, pady=10, padx=10)
 camera_mode_button = ttk.Button(frame, text=camera_mode_button_text(), command=toggle_camera_mode)
 camera_mode_button.grid(column=0, row=10, pady=10, padx=10)
 
-camera_mode_button = ttk.Button(frame, text=camera_mode_button_text(), command=toggle_camera_mode)
-camera_mode_button.grid(column=0, row=11, pady=10, padx=10)
-
-monitorButton = ttk.Button(frame, text="Monitor Real-time Data", command=monitor_data)
+monitorButton = ttk.Button(frame, text="Monitor Real-time Data",
+                           command=lambda: monitor_real_time_data(smart_light, thermostat, security_camera))
 monitorButton.grid(column=0, row=11, pady=10, padx=10)
 
-app.mainloop()
+monitorButton2 = ttk.Button(frame, text="Monitor Random generated Data", command=monitor_random_data)
+monitorButton2.grid(column=0, row=12, pady=10, padx=10)
 
+app.mainloop()
