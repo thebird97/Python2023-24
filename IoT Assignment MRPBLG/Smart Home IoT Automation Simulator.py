@@ -302,15 +302,15 @@ def execute_automation_tasks(self):
                 device.reset_alarm()
 
 
-
-smart_light = SmartLight("Part 2 Light_02")
-thermostat = Thermostat("Part 2 Thermo_2")
-security_camera = SecurityCamera("Part 2 Camera_02")
+smart_lightP2 = SmartLight("Part 2 Light_02")
+thermostatP2 = Thermostat("Part 2 Thermo_2")
+security_cameraP2 = SecurityCamera("Part 2 Camera_02")
 
 
 home_automation = AutomationSystem()
-home_automation.discover_devices([smart_light, thermostat, security_camera])
+home_automation.discover_devices([smart_lightP2, thermostatP2, security_cameraP2])
 home_automation.simulate_automation_system(10, 1)
+
 
 # PART 3
 print("PART 3")
@@ -423,6 +423,10 @@ if __name__ == '__main__':
 
 
 # PART 4 GUI
+# GUI variables
+smart_light = SmartLight("Hall Smartlight 01")
+thermostat = Thermostat("Dining Thermostat 01")
+security_camera = SecurityCamera("Front Door Camera_01")
 
 # Light control functions
 def toggle_light_gui():
@@ -430,18 +434,21 @@ def toggle_light_gui():
         light_status_var.set("Off")
         smart_light.turn_off()
         brightness_scale.set(0)
+        smart_light.status = DeviceStatus.OFF
+
     else:
         light_status_var.set("On")
         smart_light.turn_on()
         brightness_scale.set(100)
+        smart_light.status = DeviceStatus.ON
 
-    update_light_label()
     update_status_label()
-
+    update_light_label()
 
 def update_light_label():
     smart_light.set_brightness(int(brightness_scale.get()))
     light_brightness_var.set(f"{smart_light.device_id} : \n{int(brightness_scale.get())}")
+
 
 
 # Thermostat control functions
@@ -513,10 +520,11 @@ def toggle_cam_onoff():
         security_camera.status = DeviceStatus.ON
     update_camera_onoff_button()
     update_camera_mode_button()
-    update_status_label()  # Update status label
+    update_status_label()
 
 
 def update_status_label():
+    print(f"{smart_light.device_id} status label {smart_light.status.value}")
     status_label.config(text=f"{smart_light.device_id} : {smart_light.status.value}\n"
                              f"{thermostat.device_id}: {thermostat.status.value}\n"
                              f"{security_camera.device_id}: {security_camera.status.value}")
@@ -670,10 +678,6 @@ def monitor_real_time_data(smart_light, thermostat, security_camera):
 
     update_data_real()
 
-
-smart_light = SmartLight("Hall Smartlight 01")
-thermostat = Thermostat("Dining Thermostat 01")
-security_camera = SecurityCamera("Front Door Camera_01")
 
 app = tk.Tk()
 app.title("Smart Home IoT Simulator")
