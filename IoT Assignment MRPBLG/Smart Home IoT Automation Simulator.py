@@ -1,13 +1,11 @@
-import random
-import sys
-from enum import Enum
-import time
 import datetime
-import unittest
-import unittest
+import random
+import time
 import tkinter as tk
+import unittest
+from enum import Enum
 from tkinter import ttk
-import matplotlib.pyplot as plt
+
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 
@@ -304,7 +302,7 @@ def execute_automation_tasks(self):
                 device.reset_alarm()
 
 
-"""
+
 smart_light = SmartLight("Part 2 Light_02")
 thermostat = Thermostat("Part 2 Thermo_2")
 security_camera = SecurityCamera("Part 2 Camera_02")
@@ -313,7 +311,7 @@ security_camera = SecurityCamera("Part 2 Camera_02")
 home_automation = AutomationSystem()
 home_automation.discover_devices([smart_light, thermostat, security_camera])
 home_automation.simulate_automation_system(10, 1)
-"""
+
 # PART 3
 print("PART 3")
 
@@ -417,6 +415,8 @@ class TestAutomationSystem(unittest.TestCase):
 
         # Further checks can be added based on expected behavior
 
+
+print("PART 3 UNIT TESTS")
 
 if __name__ == '__main__':
     unittest.main()
@@ -536,7 +536,7 @@ def camera_onoff_button_text():
 def monitor_random_data():
     # Create a new top-level window
     monitor_window = tk.Toplevel(app)
-    monitor_window.title("Real-time Data Monitoring")
+    monitor_window.title("Random generated Data Monitoring")
 
     # Create a figure for plotting
     fig = Figure(figsize=(10, 4), dpi=100)
