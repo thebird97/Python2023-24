@@ -435,7 +435,6 @@ def toggle_light_gui():
         smart_light.turn_off()
         brightness_scale.set(0)
         smart_light.status = DeviceStatus.OFF
-
     else:
         light_status_var.set("On")
         smart_light.turn_on()
@@ -524,7 +523,6 @@ def toggle_cam_onoff():
 
 
 def update_status_label():
-    print(f"{smart_light.device_id} status label {smart_light.status.value}")
     status_label.config(text=f"{smart_light.device_id} : {smart_light.status.value}\n"
                              f"{thermostat.device_id}: {thermostat.status.value}\n"
                              f"{security_camera.device_id}: {security_camera.status.value}")
