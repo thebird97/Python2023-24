@@ -383,7 +383,6 @@ class TestAutomationSystem(unittest.TestCase):
         home_automation.remove_device(security_camera)
         self.assertNotIn(security_camera, home_automation.devices)
 
-        # Execute automation tasks and verify changes
         smart_light.set_brightness(60)
         thermostat.set_temperature(26)
 
@@ -403,17 +402,13 @@ class TestAutomationSystem(unittest.TestCase):
         home_automation = AutomationSystem()
         home_automation.discover_devices([smart_light, thermostat, security_camera])
 
-        # Simulate for a short duration
         home_automation.simulate_automation_system(duration=2, interval=1)
 
-        # Check if the devices' last_updated time has changed
         current_time = datetime.datetime.now()
 
         self.assertLess((current_time - smart_light.last_updated).total_seconds(), 3)
         self.assertLess((current_time - thermostat.last_updated).total_seconds(), 3)
         self.assertLess((current_time - security_camera.last_updated).total_seconds(), 3)
-
-        # Further checks can be added based on expected behavior
 
 
 print("PART 3 UNIT TESTS")
